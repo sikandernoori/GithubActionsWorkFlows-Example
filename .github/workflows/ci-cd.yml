@@ -49,6 +49,10 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '8'
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.3.0'
+          channel: 'stable'
       - name: Setup Ruby (bundle)
         uses: ruby/setup-ruby@v1
         with:
