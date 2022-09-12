@@ -149,7 +149,7 @@ jobs:
           api-private-key: ${{ secrets.APPSTORE_API_PRIVATE_KEY }}
   release:
     name: release
-    needs: [testlab, upload_testflight]
+    needs: [upload_testflight]
     runs-on: ubuntu-latest
 
     steps:
