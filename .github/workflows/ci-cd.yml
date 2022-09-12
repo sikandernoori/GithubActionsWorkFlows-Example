@@ -1,4 +1,4 @@
-name: "Mobile App -> Build, Test & Release"
+name: "Flutter App -> Build(Android & IOS), Test(Firebase TestLab) & Release"
 on:
   push:
     branches:
@@ -26,7 +26,7 @@ jobs:
       #   run: echo "${{ secrets.KEYPROP_PROD }}" | base64 --decode > android/key.properties
       # - name: Decoding android/neumodore_key.jks
       #   run: echo "${{ secrets.KEYJKS_PROD }}" | base64 --decode > android/app/key.jks
-      - arun: flutter build appbundle --release --no-sound-null-safety
+      - run: flutter build appbundle --release --no-sound-null-safety
       - name: upload aab to artifacts
         uses: actions/upload-artifact@v1
         with:
@@ -81,53 +81,53 @@ jobs:
         with:
           name: ipa-production-release
           path: output.ipa
-  testlab:
-    name: Firebase Test Lab
-    needs: build-android
-    runs-on: ubuntu-latest
+  # testlab:
+  #   name: Firebase Test Lab
+  #   needs: build-android
+  #   runs-on: ubuntu-latest
 
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          ref: production
-      - name: Download app bundle
-        uses: actions/download-artifact@v1
-        with:
-          name: app-production-release
-      - name: 'Auth Google CLI'
-        uses: 'google-github-actions/auth@v0'
-        with:
-          credentials_json: '${{ secrets.GCP_FIREBASE_CREDENTIALS }}'
+  #   steps:
+  #     - uses: actions/checkout@v3
+  #       with:
+  #         ref: production
+  #     - name: Download app bundle
+  #       uses: actions/download-artifact@v1
+  #       with:
+  #         name: app-production-release
+  #     - name: 'Auth Google CLI'
+  #       uses: 'google-github-actions/auth@v0'
+  #       with:
+  #         credentials_json: '${{ secrets.GCP_FIREBASE_CREDENTIALS }}'
 
-      - name: 'Set up Cloud SDK'
-        uses: 'google-github-actions/setup-gcloud@v0'
+  #     - name: 'Set up Cloud SDK'
+  #       uses: 'google-github-actions/setup-gcloud@v0'
 
-      - name: List Available devices
-        run: gcloud firebase test android models list
+  #     - name: List Available devices
+  #       run: gcloud firebase test android models list
 
-      - name: Run Robo Tests in Firebase Test Lab
-        run: gcloud firebase test android run --type robo --device model=Pixel3,version=30,locale=en,orientation=portrait --app ./app-production-release/app-production-release.aab --results-dir=${{ github.run_number }}
+  #     - name: Run Robo Tests in Firebase Test Lab
+  #       run: gcloud firebase test android run --type robo --device model=Pixel3,version=30,locale=en,orientation=portrait --app ./app-production-release/app-production-release.aab --results-dir=${{ github.run_number }}
       
-      - name: create result directory
-        run: mkdir ./results
+  #     - name: create result directory
+  #       run: mkdir ./results
 
-      - name: Download video
-        run: gsutil cp gs://test-lab-bydj68vmsh0c8-w51km6dvhab4q/${{ github.run_number }}/Pixel3-30-en-portrait/video.mp4 ./results
+  #     - name: Download video
+  #       run: gsutil cp gs://test-lab-bydj68vmsh0c8-w51km6dvhab4q/${{ github.run_number }}/Pixel3-30-en-portrait/video.mp4 ./results
 
-      - name: Download Screenshots
-        run: gsutil -m cp -r gs://test-lab-bydj68vmsh0c8-w51km6dvhab4q/${{ github.run_number }}/Pixel3-30-en-portrait/artifacts/ ./results
+  #     - name: Download Screenshots
+  #       run: gsutil -m cp -r gs://test-lab-bydj68vmsh0c8-w51km6dvhab4q/${{ github.run_number }}/Pixel3-30-en-portrait/artifacts/ ./results
 
-      - name: upload video to artifacts 
-        uses: actions/upload-artifact@v1
-        with:
-          name: Video
-          path: ./results/video.mp4
+  #     - name: upload video to artifacts 
+  #       uses: actions/upload-artifact@v1
+  #       with:
+  #         name: Video
+  #         path: ./results/video.mp4
 
-      - name: upload Screenshots to artifacts 
-        uses: actions/upload-artifact@v1
-        with:
-          name: Screenshots
-          path: ./results/artifacts/
+  #     - name: upload Screenshots to artifacts 
+  #       uses: actions/upload-artifact@v1
+  #       with:
+  #         name: Screenshots
+  #         path: ./results/artifacts/
   upload_testflight:
     name: TestFlight upload
     needs: build-ios
@@ -160,16 +160,16 @@ jobs:
         uses: actions/download-artifact@v1
         with:
           name: app-production-release
-      - name: Download video
-        uses: actions/download-artifact@v1
-        with:
-          name: Video
-      - name: Download screenshots
-        uses: actions/download-artifact@v1
-        with:
-          name: Screenshots
-      - name: Zip Screenshots
-        run: zip -r Screenshots Screenshots
+      # - name: Download video
+      #   uses: actions/download-artifact@v1
+      #   with:
+      #     name: Video
+      # - name: Download screenshots
+      #   uses: actions/download-artifact@v1
+      #   with:
+      #     name: Screenshots
+      # - name: Zip Screenshots
+      #   run: zip -r Screenshots Screenshots
       - name: Download ipa
         uses: actions/download-artifact@v1
         with:
@@ -177,8 +177,8 @@ jobs:
       - name: Push to Releases
         uses: ncipollo/release-action@v1
         with:
-          artifacts: "./app-production-release/app-production-release.aab, ./ipa-production-release/output.ipa, Video/video.mp4, Screenshots.zip" #TODO(skandar) Add IOS release when ready.
-          tag: v1.2.4 - ${{ github.run_number }}
+          artifacts: "./app-production-release/app-production-release.aab, ./ipa-production-release/output.ipa"
+          tag: v0.0.1 - ${{ github.run_number }} #TODO(skandar) pick version number from pubspec.yml
           token: ${{ secrets.GITHUB_TOKEN }}
   sendNotification:
         name: Send Notification
