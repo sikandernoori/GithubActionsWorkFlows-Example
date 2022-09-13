@@ -4,6 +4,7 @@ on:
     branches:
       - master
   release:
+    types: [published]
 jobs:
   build-android:
     name: Build & upload aab
