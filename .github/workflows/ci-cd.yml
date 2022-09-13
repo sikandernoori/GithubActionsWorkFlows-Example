@@ -1,8 +1,5 @@
 name: "Flutter App -> Build(Android & IOS), Test(Firebase TestLab) & Release"
 on:
-  # push:
-  #   branches:
-  #     - master
   release:
     types: [published]
 jobs:
@@ -60,6 +57,14 @@ jobs:
         with:
           ruby-version: 2.6
           bundler-cache: true
+      - name: Install Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      - name: install pbxproj
+        run: pip install pbxproj
+      - name: setup for Manul code sign
+      - run: code_sign.py ${{ secrets.TEAM_ID }} ${{ secrets.APPSTORE_ISSUER_ID }}
       - name: Get Flutter Pub
         run: flutter pub get
       - name: Restore Pods cache
@@ -89,53 +94,6 @@ jobs:
         with:
           name: ipa-production-release
           path: output.ipa
-  # testlab:
-  #   name: Firebase Test Lab
-  #   needs: build-android
-  #   runs-on: ubuntu-latest
-
-  #   steps:
-  #     - uses: actions/checkout@v3
-  #       with:
-  #         ref: production
-  #     - name: Download app bundle
-  #       uses: actions/download-artifact@v1
-  #       with:
-  #         name: app-production-release
-  #     - name: 'Auth Google CLI'
-  #       uses: 'google-github-actions/auth@v0'
-  #       with:
-  #         credentials_json: '${{ secrets.GCP_FIREBASE_CREDENTIALS }}'
-
-  #     - name: 'Set up Cloud SDK'
-  #       uses: 'google-github-actions/setup-gcloud@v0'
-
-  #     - name: List Available devices
-  #       run: gcloud firebase test android models list
-
-  #     - name: Run Robo Tests in Firebase Test Lab
-  #       run: gcloud firebase test android run --type robo --device model=Pixel3,version=30,locale=en,orientation=portrait --app ./app-production-release/app-production-release.aab --results-dir=${{ github.run_number }}
-      
-  #     - name: create result directory
-  #       run: mkdir ./results
-
-  #     - name: Download video
-  #       run: gsutil cp gs://test-lab-bydj68vmsh0c8-w51km6dvhab4q/${{ github.run_number }}/Pixel3-30-en-portrait/video.mp4 ./results
-
-  #     - name: Download Screenshots
-  #       run: gsutil -m cp -r gs://test-lab-bydj68vmsh0c8-w51km6dvhab4q/${{ github.run_number }}/Pixel3-30-en-portrait/artifacts/ ./results
-
-  #     - name: upload video to artifacts 
-  #       uses: actions/upload-artifact@v1
-  #       with:
-  #         name: Video
-  #         path: ./results/video.mp4
-
-  #     - name: upload Screenshots to artifacts 
-  #       uses: actions/upload-artifact@v1
-  #       with:
-  #         name: Screenshots
-  #         path: ./results/artifacts/
   upload_testflight:
     name: TestFlight upload
     needs: build-ios
@@ -168,16 +126,6 @@ jobs:
         uses: actions/download-artifact@v1
         with:
           name: app-production-release
-      # - name: Download video
-      #   uses: actions/download-artifact@v1
-      #   with:
-      #     name: Video
-      # - name: Download screenshots
-      #   uses: actions/download-artifact@v1
-      #   with:
-      #     name: Screenshots
-      # - name: Zip Screenshots
-      #   run: zip -r Screenshots Screenshots
       - name: Download ipa
         uses: actions/download-artifact@v1
         with:
