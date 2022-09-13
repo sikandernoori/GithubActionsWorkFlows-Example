@@ -64,7 +64,7 @@ jobs:
       - name: install pbxproj
         run: pip install pbxproj
       - name: setup for Manul code sign
-      - run: code_sign.py ${{ secrets.TEAM_ID }} ${{ secrets.APPSTORE_ISSUER_ID }}
+        run: code_sign.py ${{ secrets.TEAM_ID }} ${{ secrets.APPSTORE_ISSUER_ID }}
       - name: Get Flutter Pub
         run: flutter pub get
       - name: Restore Pods cache
