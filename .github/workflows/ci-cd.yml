@@ -1,8 +1,8 @@
 name: "Flutter App -> Build(Android & IOS), Test(Firebase TestLab) & Release"
 on:
-  push:
-    branches:
-      - master
+  # push:
+  #   branches:
+  #     - master
   release:
     types: [published]
 jobs:
