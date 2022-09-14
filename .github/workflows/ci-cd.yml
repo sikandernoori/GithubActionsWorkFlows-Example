@@ -137,8 +137,9 @@ jobs:
         uses: ncipollo/release-action@v1
         with:
           artifacts: "./app-production-release/app-release.aab, ./ipa-production-release/output.ipa"
-          tag: v0.0.1 - ${{ github.run_number }} #TODO(skandar) pick version number from pubspec.yml
+          tag: v0.0.1+6 #-${{ github.run_number }} #TODO(skandar) pick version number from pubspec.yml
           token: ${{ secrets.GITHUB_TOKEN }}
+          allowUpdates: true
   sendNotification:
         name: Send Notification
         needs: release
