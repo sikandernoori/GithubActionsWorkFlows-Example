@@ -1,43 +1,44 @@
 name: "Flutter App -> Build(Android & IOS), Test(Firebase TestLab) & Release"
 on:
   push:
-  
+
   release:
     types: [published]
 jobs:
-  build-android:
-    name: Build & upload aab
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-java@v2
-        with:
-          distribution: 'temurin'
-          java-version: '11'
-      - uses: subosito/flutter-action@v2
-        with:
-          flutter-version: '3.3.0'
-          channel: 'stable'
-      # - name: Increment Build number
-      #   run: perl -i -pe 's/^(version:\s+\d+\.\d+\.\d+\+)(\d+)$/$1.(${{github.run_number}})/e' pubspec.yaml
-      - name: Get Flutter Pub
-        run: flutter pub get
-      # - run: flutter test 
-      # - name: Decoding android/key.properties
-      #   run: echo "${{ secrets.KEYPROP_PROD }}" | base64 --decode > android/key.properties
-      # - name: Decoding android/neumodore_key.jks
-      #   run: echo "${{ secrets.KEYJKS_PROD }}" | base64 --decode > android/app/key.jks
-      - run: flutter build appbundle --release
-      - name: upload aab to artifacts
-        uses: actions/upload-artifact@v1
-        with:
-          name: app-release-aab
-          path: 'build/app/outputs/bundle/release/app-release.aab'
-      - name: upload mapping file to artifacts
-        uses: actions/upload-artifact@v1
-        with:
-          name: android-mapping
-          path: 'build/app/outputs/mapping/release/mapping.txt'
+  # build-android:
+  #   name: Build & upload aab
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #     - uses: actions/setup-java@v2
+  #       with:
+  #         distribution: 'temurin'
+  #         java-version: '11'
+  #     - uses: subosito/flutter-action@v2
+  #       with:
+  #         flutter-version: '3.3.0'
+  #         channel: 'stable'
+  #     # - name: Increment Build number
+  #     #   run: perl -i -pe 's/^(version:\s+\d+\.\d+\.\d+\+)(\d+)$/$1.(${{github.run_number}})/e' pubspec.yaml
+  #     - name: Get Flutter Pub
+  #       run: flutter pub get
+  #     # - run: flutter test 
+  #     # - name: Decoding android/key.properties
+  #     #   run: echo "${{ secrets.KEYPROP_PROD }}" | base64 --decode > android/key.properties
+  #     # - name: Decoding android/neumodore_key.jks
+  #     #   run: echo "${{ secrets.KEYJKS_PROD }}" | base64 --decode > android/app/key.jks
+  #     - run: flutter build appbundle --release
+  #     - name: upload aab to artifacts
+  #       uses: actions/upload-artifact@v1
+  #       with:
+  #         name: app-release-aab
+  #         path: 'build/app/outputs/bundle/release/app-release.aab'
+  #     - name: upload mapping file to artifacts
+  #       uses: actions/upload-artifact@v1
+  #       with:
+  #         name: android-mapping
+  #         path: 'build/app/outputs/mapping/release/mapping.txt'
+  
   build-ios:
     name: Build IOS
     runs-on: macos-latest
@@ -117,7 +118,7 @@ jobs:
           api-private-key: ${{ secrets.APPSTORE_API_PRIVATE_KEY }}
   release:
     name: release
-    needs: [build-android, upload_testflight]
+    needs: [upload_testflight]
     runs-on: ubuntu-latest
 
     steps:
