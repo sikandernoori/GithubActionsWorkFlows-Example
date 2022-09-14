@@ -32,7 +32,7 @@ jobs:
         uses: actions/upload-artifact@v1
         with:
           name: app-release-aab
-          path: 'build/app/outputs/bundle/release/app-production-release.aab'
+          path: 'build/app/outputs/bundle/release/app-release.aab'
       - name: upload mapping file to artifacts
         uses: actions/upload-artifact@v1
         with:
@@ -136,7 +136,7 @@ jobs:
       - name: Push to Releases
         uses: ncipollo/release-action@v1
         with:
-          artifacts: "./app-production-release/app-production-release.aab, ./ipa-production-release/output.ipa"
+          artifacts: "./app-production-release/app-release.aab, ./ipa-production-release/output.ipa"
           tag: v0.0.1 - ${{ github.run_number }} #TODO(skandar) pick version number from pubspec.yml
           token: ${{ secrets.GITHUB_TOKEN }}
   sendNotification:
