@@ -21,6 +21,7 @@ jobs:
           channel: 'stable'
       - name: print flutter flutterversion
         run: echo "::set-output name=FLUTTER_VERSION::$(flutter --version):1:1"
+        id: version
       # - name: Increment Build number
       #   run: perl -i -pe 's/^(version:\s+\d+\.\d+\.\d+\+)(\d+)$/$1.(${{github.run_number}})/e' pubspec.yaml
       - name: Get Flutter Pub
@@ -31,9 +32,8 @@ jobs:
       # - name: Decoding android/neumodore_key.jks
       #   run: echo "${{ secrets.KEYJKS_PROD }}" | base64 --decode > android/app/key.jks
       - name: Build apk
-        run: flutter build apk --release --dart-define=TRACKR_GIT_COMMIT_DATE=$(git log -n1 --date=short --format="%ad") --dart-define=TRACKR_GIT_COMMIT_HASH=$(git log -n1 --date=short --format="%h") --dart-define=TRACKR_FLUTTER_VERSION=${$(flutter --version):8:6}
-        env:
-          ARGS: "--dart-define=TRACKR_GIT_COMMIT_DATE=$GIT_COMMIT_DATE --dart-define=TRACKR_GIT_COMMIT_HASH=$GIT_COMMIT_HASH --dart-define=TRACKR_FLUTTER_VERSION=${FLUTTER_VERSION}"
+        run: flutter build apk --release --dart-define=TRACKR_GIT_COMMIT_DATE=$(git log -n1 --date=short --format="%ad") --dart-define=TRACKR_GIT_COMMIT_HASH=$(git log -n1 --date=short --format="%h") --dart-define=TRACKR_FLUTTER_VERSION=${{ steps.version.outputs.FLUTTER_VERSION }}
+
       - name: upload aab to artifacts
         uses: actions/upload-artifact@v1
         with:
