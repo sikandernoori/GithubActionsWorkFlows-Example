@@ -13,17 +13,16 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '11'
-      - name: print flutter flutterversion
-        run: echo $(flutter --version)
-        env:
-          version: flutter --version
-
       - name: print git hash
         run:  echo $(git log -n1 --date=short --format="%h")
       - uses: subosito/flutter-action@v2
         with:
           flutter-version: '3.3.0'
           channel: 'stable'
+      - name: print flutter flutterversion
+        run: echo $(flutter --version)
+        env:
+          flutterversion: flutter --version
       # - name: Increment Build number
       #   run: perl -i -pe 's/^(version:\s+\d+\.\d+\.\d+\+)(\d+)$/$1.(${{github.run_number}})/e' pubspec.yaml
       - name: Get Flutter Pub
