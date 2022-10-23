@@ -20,7 +20,7 @@ jobs:
           flutter-version: '3.3.0'
           channel: 'stable'
       - name: print flutter flutterversion
-        run: echo "::set-output name=FLUTTER_VERSION::$(flutter --version):1:1"
+        run: echo "::set-output name=FLUTTER_VERSION::$(flutter --version):8:6"
         id: version
       # - name: Increment Build number
       #   run: perl -i -pe 's/^(version:\s+\d+\.\d+\.\d+\+)(\d+)$/$1.(${{github.run_number}})/e' pubspec.yaml
