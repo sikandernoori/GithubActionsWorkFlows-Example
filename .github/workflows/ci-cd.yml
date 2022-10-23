@@ -19,8 +19,8 @@ jobs:
         with:
           flutter-version: '3.3.0'
           channel: 'stable'
-      - name: print flutter flutterversion
-        run: echo ${$(flutter --version)}
+      # - name: print flutter flutterversion
+      #   run: echo ${$(flutter --version)}
       # - name: Increment Build number
       #   run: perl -i -pe 's/^(version:\s+\d+\.\d+\.\d+\+)(\d+)$/$1.(${{github.run_number}})/e' pubspec.yaml
       - name: Get Flutter Pub
@@ -35,7 +35,7 @@ jobs:
         env:
           GIT_COMMIT_DATE: $(git log -n1 --date=short --format="%ad")
           GIT_COMMIT_HASH: $(git log -n1 --date=short --format="%h")
-          FLUTTER_VERSION: ${$(flutter --version):8:6}
+          FLUTTER_VERSION: $3.3.0
           ARGS: "--dart-define=TRACKR_GIT_COMMIT_DATE=$GIT_COMMIT_DATE --dart-define=TRACKR_GIT_COMMIT_HASH=$GIT_COMMIT_HASH --dart-define=TRACKR_FLUTTER_VERSION=${FLUTTER_VERSION}"
       - name: upload aab to artifacts
         uses: actions/upload-artifact@v1
