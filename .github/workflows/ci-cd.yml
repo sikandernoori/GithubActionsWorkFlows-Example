@@ -20,7 +20,7 @@ jobs:
           flutter-version: '3.3.0'
           channel: 'stable'
       - name: print flutter flutterversion
-        run: echo $(flutter --version)
+        run: echo $(${env.flutterversion})
         env:
           flutterversion: flutter --version
       # - name: Increment Build number
