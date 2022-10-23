@@ -14,7 +14,7 @@ jobs:
           distribution: 'temurin'
           java-version: '11'
       - name: print flutter flutterversion
-        run: echo ${env:flutterversion}
+        run: echo $(flutter --version)
         env:
           version: flutter --version
 
