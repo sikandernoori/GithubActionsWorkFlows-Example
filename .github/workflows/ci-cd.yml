@@ -20,7 +20,7 @@ jobs:
           flutter-version: '3.3.0'
           channel: 'stable'
       - name: Get Flutter version
-        run: echo "::set-output name=FLUTTER_VERSION::a{$(flutter --version):1:1}"
+        run: echo "::set-output name=FLUTTER_VERSION::{$(flutter --version):1:1}"
         id: version
       - name: print flutter version
         run : echo ${{ steps.version.outputs.FLUTTER_VERSION }}
