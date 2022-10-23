@@ -19,11 +19,8 @@ jobs:
         with:
           flutter-version: '3.3.0'
           channel: 'stable'
-      - name: Get Flutter version
-        run: echo "::set-output name=FLUTTER_VERSION::$(flutter --version)"
-        id: version
-      - name: print flutter version
-        run : echo "${{ steps.version.outputs.FLUTTER_VERSION }}:1:1"
+      - name: Set Flutter version
+        run: set -- $(flutter --version)
       # - name: Increment Build number
       #   run: perl -i -pe 's/^(version:\s+\d+\.\d+\.\d+\+)(\d+)$/$1.(${{github.run_number}})/e' pubspec.yaml
       - name: Get Flutter Pub
@@ -34,10 +31,7 @@ jobs:
       # - name: Decoding android/neumodore_key.jks
       #   run: echo "${{ secrets.KEYJKS_PROD }}" | base64 --decode > android/app/key.jks
       - name: Build apk
-        run: |
-          set -- ${{ steps.version.outputs.FLUTTER_VERSION }}
-          echo "$1"
-          flutter build apk --release --dart-define=TRACKR_GIT_COMMIT_DATE=$(git log -n1 --date=short --format="%ad") --dart-define=TRACKR_GIT_COMMIT_HASH=$(git log -n1 --date=short --format="%h") --dart-define=TRACKR_FLUTTER_VERSION="$1"
+        run: flutter build apk --release --dart-define=TRACKR_GIT_COMMIT_DATE=$(git log -n1 --date=short --format="%ad") --dart-define=TRACKR_GIT_COMMIT_HASH=$(git log -n1 --date=short --format="%h") --dart-define=TRACKR_FLUTTER_VERSION="$2"
 
       - name: upload aab to artifacts
         uses: actions/upload-artifact@v1
