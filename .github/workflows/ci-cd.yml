@@ -34,6 +34,7 @@ jobs:
         id: get-flutter-version
         uses: zgosalvez/github-actions-get-flutter-version-env@v1
       - name: Build apk
+        uses: subosito/flutter-action@v1
         run: flutter build apk --release --dart-define=TRACKR_GIT_COMMIT_DATE=$(git log -n1 --date=short --format="%ad") --dart-define=TRACKR_GIT_COMMIT_HASH=$(git log -n1 --date=short --format="%h") --dart-define=TRACKR_FLUTTER_VERSION=${{ steps.get-flutter-version.outputs.version }}
       - name: upload aab to artifacts
         uses: actions/upload-artifact@v1
