@@ -1,5 +1,10 @@
-name: "Flutter App -> Build(Android & IOS), Test(Firebase TestLab) & Release"
-on: [push]
+name: "Buils(IOS) & upload to TestFlight"
+on:
+  push:
+    branches:
+      - 420-warnings-in-github-actions
+  release:
+    types: [published]
 jobs:
   build-ios:
     name: Build IOS
@@ -90,5 +95,34 @@ jobs:
         uses: actions/download-artifact@v1
         with:
           name: ipa-production-release
+      - name: Upload app to TestFlight
+        run: xcrun altool --upload-app --type ios -f ./ipa-production-release/app.ipa --apiKey ${{ secrets.APPSTORE_API_PRIVATE_KEY }} --apiIssuer ${{ secrets.APPSTORE_ISSUER_ID }}
+  release:
+    name: release
+    needs: [upload_testflight]
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: master
       - name: Download ipa
-        uses: xcrun altool --upload-app --type ios -f ./ipa-production-release/app.ipa --apiKey ${{ secrets.APPSTORE_API_KEY_ID }} --apiIssuer ${{ secrets.APPSTORE_ISSUER_ID }}
+        uses: actions/download-artifact@v1
+        with:
+          name: ipa-production-release
+      - name: Push to Releases
+        uses: ncipollo/release-action@v1
+        with:
+          allowUpdates: true
+          artifacts: "./ipa-production-release/app.ipa"
+          token: ${{ secrets.GITHUB_TOKEN }}
+  sendNotification:
+        name: Send Notification
+        needs: release
+        runs-on: ubuntu-latest
+        steps:
+        - uses: actions/checkout@v3
+          with:
+            ref: master
+        - name: Send Email OR Notification
+          run: echo "Notificaton sent !" #TODO(skandar) send Notification via e-mail, Slack, Discord etc. if needed
