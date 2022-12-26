@@ -1,10 +1,5 @@
 name: "Buils(IOS) & upload to TestFlight"
-on:
-  push:
-    branches:
-      - 420-warnings-in-github-actions
-  release:
-    types: [published]
+on: [push]
 jobs:
   build-ios:
     name: Build IOS
